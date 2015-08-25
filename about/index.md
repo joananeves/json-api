@@ -10,16 +10,25 @@ JSON API is:
   * [@jsonapi](http://twitter.com/jsonapi) on
 [Twitter](http://twitter.com)
   * _#jsonapi_ channel on [Freenode IRC](http://freenode.net)
-  * [jsonapi Google group](https://groups.google.com/forum/?fromgroups#!forum/jsonapi)
+  * [jsonapi discussion forum](http://discuss.jsonapi.org)
 
 ## Editors <a href="#editors" id="editors" class="headerlink"></a>
 
-There are four primary editors of this specification:
+There are five primary editors of this specification:
 
 - [Steve Klabnik](http://twitter.com/steveklabnik)
 - [Yehuda Katz](http://twitter.com/wycats)
 - [Dan Gebhardt](http://twitter.com/dgeb)
 - [Tyler Kellen](http://twitter.com/tkellen)
+- [Ethan Resnick](http://twitter.com/ethanresnick)
+
+## Roadmap <a href="#roadmap" id="roadmap" class="headerlink"></a>
+
+### 1.1
+**Targeted Release Date:** September 30th, 2015
+
+* Embedding / creating multiple related resources in a single request
+* Extension support
 
 ## History <a href="#history" id="history" class="headerlink"></a>
 

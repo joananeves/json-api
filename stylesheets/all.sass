@@ -217,8 +217,17 @@ footer
   margin-top: 8px
   float: left
 
+  // width must be set explicity for when
+  // these children becomes position: fixed
   h1
     font-size: 15px
+    background-color: white
+    z-index: 1
+    width: $sidebar-width
+
+  nav > ol
+    width: $sidebar-width
+    overflow: scroll
 
   // Hide the sidebar on small viewports
   @media screen and (max-width: $page-width + ($page-padding * 2))
@@ -234,6 +243,7 @@ footer
 /** Document outline */
 
 .document-outline
+  padding-right: 40px
   font-size: 13px
 
   ol

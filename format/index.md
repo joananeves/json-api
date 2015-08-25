@@ -356,7 +356,7 @@ identifies the resource represented by the resource object.
 A server **MUST** respond to a `GET` request to the specified URL with a
 response that includes the resource as the primary data.
 
-### Resource Indentifier Objects <a href="#document-resource-identifier-objects" id="document-resource-identifier-objects" class="headerlink"></a>
+### Resource Identifier Objects <a href="#document-resource-identifier-objects" id="document-resource-identifier-objects" class="headerlink"></a>
 
 A "resource identifier object" is an object that identifies an individual
 resource.
@@ -507,7 +507,7 @@ either:
 
 The following `self` link is simply a URL:
 
-```
+```json
 "links": {
   "self": "http://example.com/posts",
 }
@@ -516,7 +516,7 @@ The following `self` link is simply a URL:
 The following `related` link includes a URL as well as meta-information
 about a related resource collection:
 
-```
+```json
 "links": {
   "related": {
     "href": "http://example.com/articles/1/comments",
@@ -589,9 +589,9 @@ first or last character:
 The following characters **MUST NOT** be used in member names:
 
 - U+002B PLUS SIGN, "+" _(used for ordering)_
-- U+002C COMMA, "," _(used separator for multiple relationship paths)_
-- U+002E PERIOD, "." _(used as relationship path separators)_
-- U+005B LEFT SQUARE BRACKET, "[" _(use in sparse fieldsets)_
+- U+002C COMMA, "," _(used as a separator between relationship paths)_
+- U+002E PERIOD, "." _(used as a separator within relationship paths)_
+- U+005B LEFT SQUARE BRACKET, "[" _(used in sparse fieldsets)_
 - U+005D RIGHT SQUARE BRACKET, "]" _(used in sparse fieldsets)_
 - U+0021 EXCLAMATION MARK, "!"
 - U+0022 QUOTATION MARK, '"'
@@ -865,7 +865,7 @@ Content-Type: application/vnd.api+json
 If the above relationship is empty, then a `GET` request to the same URL would
 return:
 
-```text
+```http
 HTTP/1.1 200 OK
 Content-Type: application/vnd.api+json
 
@@ -993,6 +993,10 @@ GET /articles?include=author&fields[articles]=title,body&fields[people]=name HTT
 Accept: application/vnd.api+json
 ```
 
+> Note: The above example URI shows unencoded `[` and `]` characters simply for
+readability. In practice, these characters must be percent-encoded, per the
+requirements [in RFC 3986](http://tools.ietf.org/html/rfc3986#section-3.4).
+
 > Note: This section applies to any endpoint that responds with resources as
 primary or included data, regardless of the request type. For instance, a
 server could support sparse fieldsets along with a `POST` request to create
@@ -1091,6 +1095,10 @@ strategy might use query parameters such as `page[number]` and `page[size]`,
 an offset-based strategy might use `page[offset]` and `page[limit]`, while a
 cursor-based strategy might use `page[cursor]`.
 
+> Note: The example query parameters above use unencoded `[` and `]` characters
+simply for readability. In practice, these characters must be percent-encoded,
+per the requirements in [RFC 3986](http://tools.ietf.org/html/rfc3986#section-3.4).
+
 > Note: This section applies to any endpoint that responds with a resource
 collection as primary data, regardless of the request type.
 
@@ -1165,7 +1173,7 @@ a properly generated and formatted *UUID* as described in RFC 4122
 may be possible to use something other than a UUID that is still guaranteed
 to be globally unique. Do not use anything other than a UUID unless you are
 100% confident that the strategy you are using indeed generates globally
-unique indentifiers.
+unique identifiers.
 
 For example:
 
@@ -1761,7 +1769,7 @@ An error object **MAY** have the following members:
   * `pointer`: a JSON Pointer [[RFC6901](https://tools.ietf.org/html/rfc6901)]
     to the associated entity in the request document [e.g. `"/data"` for a
     primary data object, or `"/data/attributes/title"` for a specific attribute].
-  * `parameter`: a string indicating which query parameter caused
+  * `parameter`: a string indicating which URI query parameter caused
     the error.
 * `meta`: a [meta object][meta] containing non-standard meta-information about the
   error.
