@@ -1,10 +1,18 @@
-# If you have OpenSSL installed, we recommend updating
-# the following line to use "https"
-source 'http://rubygems.org'
+source "https://rubygems.org"
+
+# http://jekyllrb.com/docs/github-pages/
+require 'json'
+require 'open-uri'
+versions =
+  begin
+    JSON.parse(open('https://pages.github.com/versions.json').read)
+  rescue SocketError
+    { 'github-pages' => 67 }
+  end
+
+gem 'github-pages', versions['github-pages']
 
 gem "rake", "~> 10.0"
-gem "jekyll", "~> 1.0"
-gem "redcarpet", "~> 2.2"
 gem "rb-fsevent", "~> 0.9"
 gem "compass", "~> 1.0"
 gem "sass", "~> 3.4"

@@ -1,3 +1,4 @@
+@import "highlight"
 @import "compass"
 @import "fontello"
 @charset "utf-8"
@@ -5,47 +6,81 @@
 /** Config */
 
 $page-width: 955px
-$sidebar-width: 250px
+$sidebar-width: 220px
 $page-padding: 20px
 
 $mobile-breakpoint: 800px
 
+$color-accent: rgb(11, 78, 34)
 $color-main: rgb(90, 90, 90)
+$color-med-rule: rgb(187, 187, 187)
+$color-light-rule: rgb(204, 204, 204)
 $color-masthead: rgb(235, 235, 235)
+
+$fonts-body: "Helvetica Neue", "Helvetica", Arial, "Open Sans", sans-serif
 $border-radius-main: 4px
 
 /** Mixins */
 
-@mixin centerbox()
+%centerbox
   display: block
   max-width: $page-width
   margin: 0 auto
   padding: 0 $page-padding
 
+%distribute-children
+  text-align: justify
+
+  &:after
+    content: ''
+    display: inline-block
+    width: 100%
+
+%capitalize
+  text-transform: uppercase
+  letter-spacing: .2px
+
+// Create placeholder versions of zero-argument
+// (compass) mixins to minimize duplicate output.
+%hide-text
+  +hide-text
+
+%display-flex
+  +display-flex
+
+
 body
-  font-family: "Helvetica Neue", "Helvetica", "Open Sans", sans-serif
+  font-family: $fonts-body
   font-size: 15px
   line-height: 1.6
   -webkit-font-smoothing: antialiased
-
 
 /** Typography */
 
 .headerlink
   text-decoration: none
-  color: rgba($color-main, 0.35)
+  color: $color-light-rule
 
 h1, h2, h3, h4, h5
   font-weight: 300
+  position: relative
+  left: -1em
+  padding-left: 1em
 
   &:first-child
     margin-top: 0
 
-  &:hover .headerlink::after
-    content: "¶"
+  &:hover .headerlink, .headerlink:hover
+    font-size: inherit
+    &::after
+      margin-left: -.8em
+      width: .8em
+      position: absolute
+      content: "¶"
 
 h1
-  text-transform: uppercase
+  font-weight: 500
+  color: $color-accent
 
 h2
   margin: 50px 0 15px 0
@@ -66,9 +101,16 @@ h5
   font-weight: 500
   font-size: inherit
 
-p
+  code
+    font-weight: 600
+
+p, table
   line-height: 1.7333
   margin: 0 0 13px 0
+
+th
+  text-align: left
+  padding-right: 1em
 
 a
   color: $color-main
@@ -76,31 +118,35 @@ a
 blockquote
   margin: 20px 0
   padding: 10px 15px 0 15px
-  +border-radius($border-radius-main)
+  border-radius: $border-radius-main
   color: lighten($color-main, 15%)
   background: rgba($color-main, 0.04)
-  border: 1px solid rgba($color-main, 0.35)
+  border: 1px solid $color-light-rule
 
 p > code, li > code
   padding: 1px 4px
   background: rgba(0, 0, 0, 0.06)
   white-space: nowrap
 
+code
+  font-weight: inherit
 
 /** Navigation */
 
 .site-nav
-  padding: 8px 0
   font-weight: 500
-  color: #52008E
-  background: lighten($color-masthead, 6%)
-  border-bottom: 1px solid $color-main
+  background: $color-accent
+  border-bottom: 1px solid $color-light-rule
+
+  .nav-inner
+    @extend %centerbox
 
   ul
-    +centerbox
-    +display-flex
+    @extend %display-flex
     +justify-content(space-between)
     list-style: none
+    margin: 0
+    padding: 8px 2px 8px
 
     @media screen and (max-width: $mobile-breakpoint)
       +flex-direction(column)
@@ -111,52 +157,61 @@ p > code, li > code
 
   a
     text-decoration: none
+    font-weight: 400
+    color: white
+    letter-spacing: .4px
 
   .active
     a
-      color: darken($color-main, 80%)
+      font-weight: 800
+      letter-spacing: .2px
 
-  .version span
+  .version .pill
     display: inline-block
-    margin-top: 2px
     padding: 1px 6px
-    background-color: lighten($color-main, 10%)
+    background-color: darken($color-accent, 4%)
     font-size: 12px
     font-weight: bold
     color: white
-    +border-radius($border-radius-main)
+    border-radius: $border-radius-main
+    position: relative
+    top: -1px
+
+    .stable
+      @extend %capitalize
+      text-rendering: optimizeLegibility
 
 
 /** Header */
 
 header
-  background: $color-masthead
-  border-bottom: 1px solid lighten($color-main, 30%)
-
   .content
-    padding-top: 20px
-    padding-bottom: 30px
+    padding: 29px $page-padding 41px
+    background: $color-masthead
+    border-bottom: 1px solid $color-light-rule
 
   h1
-    +hide-text
+    @extend %hide-text
     text-align: center
     height: 130px
     margin: 0
     padding: 0
+    left: -2px // optical centering
     background: url('../images/jsonapi.png') no-repeat center
     background-size: contain
 
   h2
     text-align: center
-    margin: 14px 0 40px 0
+    margin: 15px 0 40px 0
     padding: 0
+    left: 0
     font-size: 124%
     font-weight: bold
     text-transform: uppercase
 
   .quicklinks
-    +centerbox
-    +display-flex
+    @extend %centerbox
+    @extend %display-flex
     +align-items(center)
     +justify-content(center)
 
@@ -164,8 +219,8 @@ header
     display: block
     margin: 5px 15px
     padding: 6px 25px
-    +border-radius($border-radius-main)
-    border: 1px solid lighten($color-main, 30%)
+    border-radius: $border-radius-main
+    border: 1px solid $color-med-rule
     background: white
     text-decoration: none
     text-align: center
@@ -186,28 +241,48 @@ header
 /** Footer */
 
 footer
-  padding: 8px 0
-  border-top: 1px solid #B8B8B8
+  padding: 0 ($page-padding - 2px)
   text-align: center
   font-size: 12px
-  color: #B8B8B8
+  color: $color-main
+
+  .site-wrapper
+    margin-top: 0
+    margin-bottom: 0
+    line-height: 0
+    @extend %distribute-children
+    padding: 8px 2px
+    border-top: 1px solid $color-med-rule
 
   span
     display: inline-block
-    margin: 0 10px
-
-  .social-links span
-    +hide-text
+    vertical-align: middle
 
   .license
-    margin: 15px 0 10px 0
-    text-align: center
+    a
+      display: block
+      padding: .75em
 
+  .social-links
+    @extend %distribute-children
+    width: 9em
+    position: relative
+    left: .75em
+
+    span
+      @extend %hide-text
+      width: 0
+
+    // embiggen link targets
+    i
+      width: 1em
+      padding: .75em
+      display: inline-block
 
 /** Content */
 
 .site-wrapper
-  +centerbox
+  @extend %centerbox
   +clearfix
   margin-top: 50px
   margin-bottom: 50px
@@ -224,21 +299,60 @@ footer
     background-color: white
     z-index: 1
     width: $sidebar-width
+    color: inherit
+    font-weight: 300
 
   nav > ol
     width: $sidebar-width
-    overflow: scroll
+    overflow-y: auto
 
-  // Hide the sidebar on small viewports
-  @media screen and (max-width: $page-width + ($page-padding * 2))
-    display: none
+  #version-picker-wrapper
+    width: $sidebar-width
+    margin-bottom: 20px
+    display: flex
+    flex-direction: row
 
-// Float the content to the right, except on small viewports
-@media screen and (min-width: $page-width + ($page-padding * 2))
+    label
+      display: none
+      margin-right: .5em
+
+    .version-picker
+      flex-direction: row
+      flex-grow: 1
+
+  // On small viewports, but only after we've shrunk the
+  // main column to below a comfortable size (that's the -110px)..
+  @media screen and (max-width: $page-width + ($page-padding * 2) - 110px)
+    // Hide the sidebar's content, except for the version picker
+    nav > :not(#version-picker-wrapper)
+      display: none
+
+    // don't float or pad the nav the sidebar so that the version
+    // picker, which we are showing, goes full width
+    float: none
+    width: auto
+    nav
+      padding-right: 0
+
+    // bring back the label, which makes the version switcher's function
+    // a bit clearer when the sidebar isn't visible to offer context.
+    #version-picker-wrapper
+      width: auto
+      label
+        display: inline
+
+// Push the content to the right, except on small viewports
+// The padding-left: calc(...) functions to grow the gutter gradually by 25px
+// as the window grows. If this isn't supported, it's ok; the gutter width will
+// just jump to its final size at the next media query.
+@media screen and (min-width: $page-width + ($page-padding * 2) - 109px)
   .sidebar + .content
-    float: right
-    max-width: $page-width - $sidebar-width
+    margin-left: $sidebar-width + 15px
+    padding-left: calc(100vw - #{$page-width + ($page-padding * 2) - 109px})
 
+@media screen and (min-width: $page-width + ($page-padding * 2) - 94px)
+  .sidebar + .content
+    padding-left: 25px
 
 /** Document outline */
 
@@ -257,6 +371,7 @@ footer
   a
     text-decoration: none
     color: inherit
+    display: block
 
     &:hover
       color: $color-main
@@ -268,15 +383,12 @@ footer
 /** Code blocks highlighting */
 
 .highlight
-  +border-radius($border-radius-main)
+  border-radius: $border-radius-main
   position: relative
-  margin: 2em 0
   padding: 10px 15px
   background: #f9f9f9
   border: 1px solid #d1d1d1
   font-size: 12px
   line-height: 16px
-
-  pre
-    margin: 0
-    font-family: Menlo, monospace
+  margin: 2em 0
+  font-family: Menlo, monospace

@@ -10,43 +10,51 @@ $(document).ready(function() {
         documentOutlineElement.append(navList);
     }
 
-    // Scroll affix
-    fixElement($(".sidebar"), 50);
+    // Sidebar scroll affix
+    fixElement($(".sidebar"), $("footer"), 52);
+
+    activateVersionPicker();
 });
 
-function fixElement($sidebar, offset) {
+function fixElement($sidebar, $footer, offset) {
     if($sidebar.length == 0) return;
 
-    var $heading = $sidebar.find('nav > h1');
+    var $window = $(window);
+    var $nav = $sidebar.find('nav');
     var $list = $sidebar.find('nav > ol');
 
     var affixWaypoint = $sidebar.offset().top - offset;
+    var windowHeight, headingHeight, footerOffsetTop, navListHidden;
 
-    $(window).scroll(function(event) {
-        var scrollPosition = $(window).scrollTop();
+    // function to set heights + css values that need to be recomputed on resize.
+    var computeAndAdjustHeights = function() {
+        navListHidden = !$list.is(':visible');
+        windowHeight = $window.height();
+        headingHeight = $sidebar.find('.sidebar-top').outerHeight(true);
+        footerOffsetTop = $footer.offset().top;
 
-        if(scrollPosition >= affixWaypoint) {
-            $heading.css({
-              position: 'fixed',
-              top: offset + 'px',
-            });
+        $list.css({height: 'calc(100% - ' + headingHeight + 'px)'});
+    }
 
-            $list.css({
-                position: 'fixed',
-                top: (offset + $heading.outerHeight(true)) + 'px',
-                bottom: '0',
-                paddingBottom: offset + 'px'
-            });
-        } else {
-            $heading.css({position: 'relative', top: '0'})
-            $list.css({
-                position: 'relative',
-                top: '',
-                bottom: '',
-                paddingBottom: ''
+    var scrollHandler = function(event) {
+        var scrollPosition = $window.scrollTop();
+        var footerPxOnScreen = Math.max(0, (scrollPosition + windowHeight) - footerOffsetTop);
+
+        if(scrollPosition < affixWaypoint || navListHidden) {
+            $nav.css({position: ''});
+        }
+        else {
+            $nav.css({
+                'position': 'fixed',
+                'top': (offset - footerPxOnScreen) + 'px',
+                'bottom': (0 + footerPxOnScreen) + 'px'
             });
         }
-    });
+    }
+
+    computeAndAdjustHeights();
+    $window.resize(function() { computeAndAdjustHeights(); scrollHandler(); });
+    $window.scroll(scrollHandler);
 }
 
 /**
@@ -119,4 +127,10 @@ function createArticleNavigationFromOutline(outline) {
     });
 
     return ol;
+}
+
+function activateVersionPicker() {
+    $('select.version-picker').change(function() {
+        window.location.href = $(this).find(':selected').val();
+    });
 }
